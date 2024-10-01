@@ -1,0 +1,153 @@
+definitions:
+  models.Checklist:
+    properties:
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/models.TodoItem'
+        type: array
+      title:
+        type: string
+      user_id:
+        type: string
+    type: object
+  models.TodoItem:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      status:
+        type: string
+    type: object
+  models.User:
+    properties:
+      id:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /checklists:
+    get:
+      description: Get all checklists for the logged-in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Checklist'
+            type: array
+      summary: Get all checklists
+      tags:
+      - Checklists
+    post:
+      consumes:
+      - application/json
+      description: Create a new checklist for the logged-in user
+      parameters:
+      - description: Checklist info
+        in: body
+        name: checklist
+        required: true
+        schema:
+          $ref: '#/definitions/models.Checklist'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Checklist'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+      summary: Create a new checklist
+      tags:
+      - Checklists
+  /checklists/{id}:
+    delete:
+      description: Delete a checklist by ID
+      parameters:
+      - description: Checklist ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Checklist deleted successfully
+          schema:
+            type: string
+        "404":
+          description: Checklist not found
+          schema:
+            type: string
+        "500":
+          description: Failed to delete checklist
+          schema:
+            type: string
+      summary: Delete a checklist
+      tags:
+      - Checklists
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login a user and return JWT token
+      parameters:
+      - description: User info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "401":
+          description: Invalid credentials
+          schema:
+            type: string
+      summary: Login a user
+      tags:
+      - Auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with username and password
+      parameters:
+      - description: User info
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.User'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+      summary: Register a new user
+      tags:
+      - Auth
+swagger: "2.0"
